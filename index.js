@@ -71,7 +71,7 @@ class SortableFlatList extends Component {
 
           this._androidStatusBarOffset = (isTranslucent || isHidden) ? StatusBar.currentHeight : 0
         }
-        this._offset.setValue((this._additionalOffset + this._containerOffset - this._androidStatusBarOffset) * -1)
+        this._offset.setValue((this._additionalOffset + this._containerOffset - this._androidStatusBarOffset - this._scrollOffset) * -1)
         return false
       },
       onMoveShouldSetPanResponder: (evt, gestureState) => {
@@ -135,6 +135,13 @@ class SortableFlatList extends Component {
     this.state = initialState
   }
 
+  componentWillReceiveProps(nextProps) {
+    const needSetOffset = nextProps.parentOffset && nextProps.parentOffset !== this.props.parentOffset;
+    if (needSetOffset) {
+      this._scrollOffset = nextProps.parentOffset;
+    }
+  }
+
   onReleaseAnimationEnd = () => {
     const { data, onMoveEnd } = this.props
     const { activeRow, spacerIndex } = this.state
@@ -190,8 +197,8 @@ class SortableFlatList extends Component {
       const fingerPosition = Math.max(0, this._move - this._containerOffset)
       const shouldScrollUp = !isFirstItem && fingerPosition < (this._containerSize * scrollRatio)
       const shouldScrollDown = !isLastItem && fingerPosition > (this._containerSize * (1 - scrollRatio))
-      if (shouldScrollUp) this.scroll(-5, nextSpacerIndex)
-      else if (shouldScrollDown) this.scroll(5, nextSpacerIndex)
+      // if (shouldScrollUp) this.scroll(-5, nextSpacerIndex)
+      // else if (shouldScrollDown) this.scroll(5, nextSpacerIndex)
     }
 
     requestAnimationFrame(this.animate)
@@ -341,16 +348,13 @@ class SortableFlatList extends Component {
     const { horizontal, keyExtractor } = this.props
     return (
       <View
-        onLayout={e => {
-          console.log('layout', e.nativeEvent)
-        }}
         ref={this.measureContainer}
         {...this._panResponder.panHandlers}
         style={styles.wrapper} // Setting { opacity: 1 } fixes Android measurement bug: https://github.com/facebook/react-native/issues/18034#issuecomment-368417691
       >
         <FlatList
           {...this.props}
-          scrollEnabled={this.state.activeRow === -1}
+          scrollEnabled={false}
           ref={ref => this._flatList = ref}
           renderItem={this.renderItem}
           extraData={this.state}
