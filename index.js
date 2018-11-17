@@ -181,6 +181,7 @@ class SortableFlatList extends Component {
     if (activeRow === -1) return
     const nextSpacerIndex = this.getSpacerIndex(this._move, activeRow)
     if (nextSpacerIndex > -1 && nextSpacerIndex !== this._spacerIndex) {
+      this.props.onItemIndexChanged && this.props.onItemIndexChanged(nextSpacerIndex);
       LayoutAnimation.easeInEaseOut()
       this.setState({ spacerIndex: nextSpacerIndex })
       this._spacerIndex = nextSpacerIndex

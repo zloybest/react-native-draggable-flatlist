@@ -19,6 +19,7 @@ Props:
 - `onMoveEnd` (Function) `({ data, to, from, row }) => void` Returns updated ordering of `data` 
 - `onMoveBegin` (Function) `(index) => void` Called when row becomes active.
 - `parentOffset` (number) override offset value. May useful with usage into another scroll container.
+- `onItemIndexChanged` (Function) `(index) => void` 
 - All props are spread onto underlying FlatList
 
 
