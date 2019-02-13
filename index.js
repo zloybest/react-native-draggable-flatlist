@@ -237,8 +237,7 @@ class SortableFlatList extends Component {
 
   measureItem = (index) => {
     const { activeRow } = this.state
-    const { horizontal } = this.props
-    // setTimeout required or else dimensions reported as 0
+    const { horizontal, measureDelay } = this.props
     !!this._refs[index] && setTimeout(() => {
       try {
         // Using stashed ref prevents measuring an unmounted componenet, which throws an error
@@ -258,7 +257,7 @@ class SortableFlatList extends Component {
       } catch (e) {
         console.log('## measure error -- index: ', index, activeRow, this._refs[index], e)
       }
-    }, 100)
+    }, measureDelay)
   }
 
   move = (hoverComponent, index) => {
@@ -333,7 +332,7 @@ class SortableFlatList extends Component {
           this._containerOffset = horizontal ? pageX : pageY
           this._containerSize = horizontal ? width : height
         })
-      }, 50)
+      }, this.props.measureDelay)
     }
   }
 
@@ -374,6 +373,7 @@ export default SortableFlatList
 SortableFlatList.defaultProps = {
   scrollPercent: 5,
   contentContainerStyle: {},
+  measureDelay: 100,
 }
 
 class RowItem extends PureComponent {
